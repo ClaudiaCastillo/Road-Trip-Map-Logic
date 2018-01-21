@@ -73,27 +73,27 @@
       "gApiKey": "AIzaSyBntUJftstarx_tMDAHQh5Vwgsu3Ys_RTg",
       "destination": {
           "endLctn": {
-                lat: "0",
-                lng: "0",
+                lat: 0,
+                lng: 0,
                 placeId: '',
                 placeName: '',
-                budgetLevel: "0"
+                budgetLevel: 0
           },
           "wayLctn": {
-                lat: "0",
-                lng: "0",
+                lat: 0,
+                lng: 0,
                 placeId: '',
                 placeName: '',
-                budgetLevel: "0"
+                budgetLevel: 0
          },   
       },
       "lodging": {
           "endLctn": {
-              lat: "0",
-              lng: "0",
+              lat: 0,
+              lng: 0,
               name: '',
-              rating: "0",
-              priceLevel: "0",
+              rating: 0,
+              priceLevel: 0,
               website: '',
               "srchC": {
                   radius: "500",
@@ -103,11 +103,11 @@
               },
           },
           "wayLctn": {
-              lat: "0",
-              lng: "0",
+              lat: 0,
+              lng: 0,
               name: '',
-              rating: "0",
-              priceLevel: "0",
+              rating: 0,
+              priceLevel: 0,
               website: '',
               "srchC": {
                   radius: "500",
@@ -119,11 +119,11 @@
       },
       "restaurants": {
           "endLctn": {
-              lat: "0",
-              lng: "0",
+              lat: 0,
+              lng: 0,
               name: '',
-              rating: "0",
-              priceLevel: "0",
+              rating: 0,
+              priceLevel: 0,
               website: '',
               "srchC": {
                   radius: "500",
@@ -133,11 +133,11 @@
               },
           },
           "wayLctn": {
-              lat: "0",
-              lng: "0",
+              lat: 0,
+              lng: 0,
               name: '',
-              rating: "0",
-              priceLevel: "0",
+              rating: 0,
+              priceLevel: 0,
               website: '',
               "srchC": {
                   radius: "500",
@@ -149,11 +149,11 @@
       },
       "attractions": {
           "endLctn": {
-              lat: "0",
-              lng: "0",
+              lat: 0,
+              lng: 0,
               name: '',
-              rating: "0",
-              priceLevel: "0",
+              rating: 0,
+              priceLevel: 0,
               website: '',
               "srchC": {
                   radius: "500",
@@ -163,11 +163,11 @@
               },
           },
           "wayLctn": {
-              lat: "0",
-              lng: "0",
+              lat: 0,
+              lng: 0,
               name: '',
-              rating: "0",
-              priceLevel: "0",
+              rating: 0,
+              priceLevel: 0,
               website: '',
               "srchC": {
                   radius: "500",
@@ -179,7 +179,9 @@
         },
       };
 
-      var gApiKey ="AIzaSyBntUJftstarx_tMDAHQh5Vwgsu3Ys_RTg";
+      var oldRoadTripData = {};
+
+      var gApiKey = '';
       var endPointLat = '';
       var endPointLng = '';
       // var endPointBudget = '';
@@ -202,7 +204,14 @@
 
       data.once('child_added').then(function(snapshot) {
         console.log(snapshot.val());
+
+        oldRoadTripData = snapshot.val();
+        console.log(oldRoadTripData);
+
+        gApiKey = snapshot.val().gApiKey;
       });
+
+
 
       //
       // This sample uses the Place Autocomplete widget to allow the user to search for and select a place. 
@@ -283,24 +292,23 @@
               endPointLat = ajaxResponse.results[0].geometry.location.lat.toString();
               endPointLng = ajaxResponse.results[0].geometry.location.lng.toString();
 
-              RoadTripData.destination.endLctn.lat = endPointLat;
-              RoadTripData.destination.endLctn.lng = endPointLng;
+              oldRoadTripData.destination.endLctn.lat = endPointLat;
+              oldRoadTripData.destination.endLctn.lng = endPointLng;
 
-              RoadTripData.destination.endLctn.placeId    = place.place_id;
-              RoadTripData.destination.endLctn.placeName  = place.name;
+              oldRoadTripData.destination.endLctn.placeId    = place.place_id;
+              oldRoadTripData.destination.endLctn.placeName  = place.name;
 
-              console.log("road trip table data: ", RoadTripData);
+              console.log("road trip table data: ", oldRoadTripData);
 
               // Upload the Road Trip data object into the database
-              data.push(RoadTripData);
-
+              data.update(oldRoadTripData);
           });
 
           infowindow.open(map, marker);
         });
 
-      }
 
+      }
     </script>
 
 
