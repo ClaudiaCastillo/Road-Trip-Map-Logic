@@ -2,6 +2,12 @@
 <html>
   <head>
     <title>Place ID Finder</title>
+
+     <!-- Firebase Reference -->
+    <script src="https://www.gstatic.com/firebasejs/4.8.2/firebase.js"></script>
+
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <style>
@@ -62,77 +68,91 @@
     <script>
 
 
-  var RoadTripData = {
-    "destination" : {
-        "endLocation" : {
-              lat: 0,
-              lng: 0,
-              placeId: '',
-              placeName: ''
-        },
-        "wayLocation" : {
-              lat: 0,
-              lng: 0,
-              placeId: '',
-              placeName: ''
-       },   
-    },
-    "lodging": {
-        "endLocation" : {
-            lat: 0,
-            lng: 0,
-            name: '',
-            rating: 0,
-            priceLevel: 0,
-            website: ''
-        },
-        "wayLocation" : {
-            lat: 0,
-            lng: 0,
-            name: '',
-            rating: 0,
-            priceLevel: 0,
-            website: ''
-        },
-    },
-    "restaurants": {
-        "endLocation" : {
-            lat: 0,
-            lng: 0,
-            name: '',
-            rating: 0,
-            priceLevel: 0,
-            website: ''
-        },
-        "wayLocation" : {
-            lat: 0,
-            lng: 0,
-            name: '',
-            rating: 0,
-            priceLevel: 0,
-            website: ''
-        },
-    },
-    "attractions": {
-        "endLocation" : {
-            lat: 0,
-            lng: 0,
-            name: '',
-            rating: 0,
-            priceLevel: 0,
-            website: ''
-        },
-        "wayLocation" : {
-            lat: 0,
-            lng: 0,
-            name: '',
-            rating: 0,
-            priceLevel: 0,
-            website: ''
-        },
+    var RoadTripData = {
+      "userName": "Cat",
+      "destination" : {
+          "endLocation" : {
+                lat: 0,
+                lng: 0,
+                placeId: '',
+                placeName: ''
+          },
+          "wayLocation" : {
+                lat: 0,
+                lng: 0,
+                placeId: '',
+                placeName: ''
+         },   
       },
-    };
+      "lodging": {
+          "endLocation" : {
+              lat: 0,
+              lng: 0,
+              name: '',
+              rating: 0,
+              priceLevel: 0,
+              website: ''
+          },
+          "wayLocation" : {
+              lat: 0,
+              lng: 0,
+              name: '',
+              rating: 0,
+              priceLevel: 0,
+              website: ''
+          },
+      },
+      "restaurants": {
+          "endLocation" : {
+              lat: 0,
+              lng: 0,
+              name: '',
+              rating: 0,
+              priceLevel: 0,
+              website: ''
+          },
+          "wayLocation" : {
+              lat: 0,
+              lng: 0,
+              name: '',
+              rating: 0,
+              priceLevel: 0,
+              website: ''
+          },
+      },
+      "attractions": {
+          "endLocation" : {
+              lat: 0,
+              lng: 0,
+              name: '',
+              rating: 0,
+              priceLevel: 0,
+              website: ''
+          },
+          "wayLocation" : {
+              lat: 0,
+              lng: 0,
+              name: '',
+              rating: 0,
+              priceLevel: 0,
+              website: ''
+          },
+        },
+      };
 
+      var endPointLat = '';
+      var endPointLng = '';
+
+      var config = {
+        apiKey: "AIzaSyD_apD7d0ocNgkcfY50DUi5e818qUahmrc",
+        authDomain: "project-gt-82242.firebaseapp.com",
+        databaseURL: "https://project-gt-82242.firebaseio.com",
+        projectId: "project-gt-82242",
+        storageBucket: "project-gt-82242.appspot.com",
+        messagingSenderId: "954443679576"
+      };
+
+      firebase.initializeApp(config);
 
       //
       // This sample uses the Place Autocomplete widget to allow the user to search for and select a place. 
@@ -203,31 +223,22 @@
           })
           .done(function(ajaxResponse) {
               console.log("ajax response: ", ajaxResponse);
-              RoadTripData.destination.endLocation.lat = ajaxResponse.results[0].geometry.location.lat.toString();
-              RoadTripData.destination.endLocation.lng = ajaxResponse.results[0].geometry.location.lng.toString();
+              
+              endPointLat = ajaxResponse.results[0].geometry.location.lat.toString();
+              endPointLng = ajaxResponse.results[0].geometry.location.lng.toString();
+
+              RoadTripData.destination.endLocation.lat = endPointLat;
+              RoadTripData.destination.endLocation.lng = endPointLng;
+
+              RoadTripData.destination.endLocation.placeId    = place.place_id;
+              RoadTripData.destination.endLocation.placeName  = place.name;
+
+              console.log("road trip table data: ", RoadTripData);
+
+              // Upload the Road Trip data object into the database
+              data = firebase.database().ref("RoadTripUser");
+              data.push(RoadTripData);
           });
-
-          RoadTripData.destination.endLocation.placeId    = place.place_id;
-          RoadTripData.destination.endLocation.placeName  = place.name;
-          
-          var config = {
-            apiKey: "AIzaSyD_apD7d0ocNgkcfY50DUi5e818qUahmrc",
-            authDomain: "project-gt-82242.firebaseapp.com",
-            databaseURL: "https://project-gt-82242.firebaseio.com",
-            projectId: "project-gt-82242",
-            storageBucket: "project-gt-82242.appspot.com",
-            messagingSenderId: "954443679576"
-          };
-          firebase.initializeApp(config);
-
-          var roadTripDataBase = firebase.database();
-
-
-          console.log("road trip table data: ", RoadTripData);
-
-          // Upload the Road Trip data object into the database
-          roadTripDataBase.ref().set(RoadTripData);
-
 
           infowindow.open(map, marker);
         });
@@ -241,10 +252,7 @@
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPXm9QmxaInN3DegD3IayRg1BQrWlC9rA&libraries=places&callback=initMap"
         async defer></script>
-
-    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-    <!-- Firebase Reference -->
-    <script src="https://www.gstatic.com/firebasejs/4.8.2/firebase.js"></script>
+   
 
   </body>
 </html>
