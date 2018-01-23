@@ -202,13 +202,15 @@
       data = firebase.database().ref();
 
 
-      data.once('child_added').then(function(snapshot) {
+      data.once('value').then(function(snapshot) {
         console.log(snapshot.val());
 
         oldRoadTripData = snapshot.val();
         console.log(oldRoadTripData);
 
         gApiKey = snapshot.val().gApiKey;
+
+
       });
 
 
