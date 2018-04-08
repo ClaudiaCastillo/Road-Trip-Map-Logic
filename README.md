@@ -1,6 +1,6 @@
 # Road-Trip-Map-Logic
 
-Assist with Road Trip Map Logic for grup project.
+Assist with Road Trip Map Logic for group project.
 
 https://claudiacastillo.github.io/roadTrip/
 
